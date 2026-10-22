@@ -314,9 +314,14 @@ catch(error){$('historyStatus').textContent=`Could not delete history: ${error.m
 function fileName(extension){
 const name=String(S.name||'CV').replace(/[<>:"/\\|?*\x00-\x1f]/g,' ').trim().replace(/\s+/g,'-').slice(0,80);
 return`${name||'CV'}.${extension}`}
+function pdfInstructions(){
+const ua=navigator.userAgent||'',ios=/iPhone|iPad|iPod/i.test(ua),android=/Android/i.test(ua);
+if(S.lang==='km')return ios?'នៅក្នុងការមើល PDF ជាមុន សូមចុច Share រួចជ្រើស Save to Files ដើម្បីទាញយក PDF។':android?'នៅក្នុងជម្រើសបោះពុម្ព សូមជ្រើស Save as PDF រួចចុចប៊ូតុង PDF ឬទាញយក។':'សូមជ្រើស Save as PDF ក្នុងប្រអប់បោះពុម្ព ដើម្បីទាញយកឯកសារ។';
+return ios?'In the print preview, tap Share, then Save to Files to download your PDF.':android?'In the print options, choose “Save as PDF”, then tap the PDF or download button.':'Choose “Save as PDF” in the print dialog to download your file.'}
 function exportPDF(){
 const savedVersion=saveHistory('PDF export');
-setStatus(savedVersion?'Choose “Save as PDF” in the print dialog to download your file. A history version was saved.':'Choose “Save as PDF” in the print dialog. History could not be saved.',!savedVersion);
+document.title=fileName('pdf').replace(/\.pdf$/i,'');
+setStatus(`${pdfInstructions()} ${savedVersion?(S.lang==='km'?'បានរក្សាទុកកំណែក្នុងប្រវត្តិ។':'A history version was saved.'):(S.lang==='km'?'មិនអាចរក្សាទុកប្រវត្តិបានទេ។':'History could not be saved.')}`,!savedVersion);
 window.print()}
 function exportWord(){
 const savedVersion=saveHistory('Word export');
