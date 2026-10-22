@@ -173,7 +173,17 @@ textarea{resize:vertical;min-height:84px}
 .pay img.qr{width:100%;max-width:300px;display:block;margin:8px auto;border-radius:10px}
 .pay .st{font-size:13px;margin:12px 0 4px;font-weight:700}
 .pay #proofPrev{max-width:100%;max-height:160px;margin-top:8px;border-radius:8px;display:none}
-@media(max-width:640px){.top-actions{width:100%}.top-actions>.tabs{flex:1 1 0}.top-actions>.tabs button{flex:1}.top-actions>#print{flex:1 0 100%}}
+@media(max-width:640px){.top-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.top-actions>.tabs{min-width:0}.top-actions>.tabs button{flex:1}.top-actions>#print{grid-column:1/-1}
+.template-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px 44px;grid-template-areas:"random random prev next" "cat cat flt flt"}
+.template-actions #auto{grid-area:random}.template-actions #prev{grid-area:prev}.template-actions #next{grid-area:next}.template-actions #cat{grid-area:cat}.template-actions #flt{grid-area:flt}
+.template-actions button,.template-actions select{width:100%;min-width:0}
+main.wrap{gap:12px;padding:12px}
+.panel{padding:14px}
+.stage{padding:8px;overflow:hidden;border-radius:12px}
+button{min-height:44px}
+input,textarea,select{font-size:16px}
+.pay-bg{padding:10px}
+.pay{padding:16px}}
 @media(max-width:420px){.tg{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media print{
 body *{visibility:hidden}
@@ -196,7 +206,7 @@ body:not(.paid) .paper{display:none!important}
 <div>
 <div class="panel">
 <h2><span id="ttpl">Template</span> <span id="tname"></span></h2>
-<div class="row"><button id="auto" class="pri">Random</button><button id="prev">←</button><select id="cat"></select><select id="flt"></select><button id="next">→</button></div>
+<div class="row template-actions"><button id="auto" class="pri">Random</button><button id="prev">←</button><select id="cat"></select><select id="flt"></select><button id="next">→</button></div>
 <div class="grid" id="grid"></div>
 <p class="hint" id="hint"></p>
 <p class="hint" id="autoHint" aria-live="polite"></p>
@@ -282,7 +292,7 @@ try{
 window.print();
 }finally{button.disabled=false;button.textContent=oldLabel}}
 
-function fit(){const s=document.querySelector('.stage'),p=$('paper');p.style.zoom=1;p.style.zoom=Math.min(1,(s.clientWidth-2)/p.offsetWidth)}
+function fit(){const s=document.querySelector('.stage'),p=$('paper'),cs=getComputedStyle(s),available=s.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);p.style.zoom=1;p.style.zoom=Math.min(1,available/p.offsetWidth)}
 function randomTemplate(){const ct=Math.floor(S.tpl/LAY.length),cl=S.tpl%LAY.length;const alt=Array.from({length:TEMPLATE_COUNT},(_,i)=>i).filter(i=>Math.floor(i/LAY.length)!==ct&&i%LAY.length!==cl);return alt[Math.floor(Math.random()*alt.length)]}
 function catOpts(){const v=$('cat').value||'all';$('cat').innerHTML=`<option value="all">${T('allc')}</option>`+CAT.map((c,i)=>`<option value="${i}">${S.lang==='km'?c[1]:c[0]} (${c[2].length*LAY.length})</option>`).join('');$('cat').value=v}
 function gal(){const c=$('cat').value||'all',v=$('flt').value||'all';let h='';
